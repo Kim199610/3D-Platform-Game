@@ -17,7 +17,7 @@ public class PlayerAnimation : MonoBehaviour
     }
     public void IdleChange_Random()
     {
-        if (Random.value > 0.8f)
+        if (Random.value > 0.2f)
         {
             animator.SetTrigger("IdleChange");
         }
@@ -36,7 +36,6 @@ public class PlayerAnimation : MonoBehaviour
     }
     public void LandEnd()
     {
-        transform.rotation = Quaternion.identity;
-        controller._isJumping = false;
+        controller.LandEnd();
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
 
 public class PlayerController : MonoBehaviour
 {
@@ -51,6 +52,7 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
+        
         Vector3 moveDirection = transform.forward * _curMoveInput.y + transform.right * _curMoveInput.x;
         moveDirection *= _isWalk ? _walkSpeed : _isSprint ? moveSpeed * sprintSpeedRate : moveSpeed;
         moveDirection.y = _rigidbody.velocity.y;
@@ -79,12 +81,24 @@ public class PlayerController : MonoBehaviour
             _curMoveInput = Vector2.zero;
         }
         MoveAnimationUpdate();
+        if (!_isJumping)
+        {
+            if (_isSprint && _curMoveInput.y <= 0)
+            {
+                RotateBody(_curMoveInput.x != 0);
+            }
+            else
+            {
+                _animator.transform.localRotation = Quaternion.identity;
+            }
+        }
+            
     }
     void MoveAnimationUpdate()
     {
         _animator.SetBool("Forward", _curMoveInput.y > 0);
         _animator.SetBool("Back", _curMoveInput.y < 0);
-        //_animator.SetBool("ForwardOrBack", _curMoveInput.y != 0);   뒤로 달리지 못하게 변경, 필요없어짐
+        _animator.SetBool("ForwardOrBack", _curMoveInput.y != 0);
         _animator.SetBool("Right", _curMoveInput.x > 0);
         _animator.SetBool("Left",_curMoveInput.x < 0);
     }
@@ -98,7 +112,10 @@ public class PlayerController : MonoBehaviour
         {
             _animator.SetTrigger("Jump");
             if (_curMoveInput != Vector2.zero)
-                _animator.transform.rotation = Quaternion.Euler(0, Mathf.Atan2(_curMoveInput.x, _curMoveInput.y) * Mathf.Rad2Deg, 0);
+            {
+                RotateBody();
+            }
+            Debug.Log($"{_animator.transform.rotation.x},{_animator.transform.rotation.y},{_animator.transform.rotation.z}");
             _isJumping = true;
         }
     }
@@ -114,6 +131,17 @@ public class PlayerController : MonoBehaviour
             _isSprint = false;
             _animator.SetBool("Sprint", _isSprint);
         }
+        if (!_isJumping)
+        {
+            if (_isSprint && _curMoveInput.y <= 0)
+            {
+                RotateBody(_curMoveInput.x != 0);
+            }
+            else
+            {
+                _animator.transform.localRotation = Quaternion.identity;
+            }
+        }
     }
     public void OnWalk(InputAction.CallbackContext context)
     {
@@ -128,6 +156,19 @@ public class PlayerController : MonoBehaviour
             _animator.SetBool("Walk", _isWalk);
         }
     }
+    void RotateBody(bool isSideSprint = false)
+    {
+        float dgree = Mathf.Atan2(_curMoveInput.x, _curMoveInput.y);
+        if(isSideSprint)
+            dgree = Mathf.Sign(dgree) * (Mathf.Abs(dgree) - Mathf.PI / 4);
+        _animator.transform.localRotation = Quaternion.Euler(0, dgree * Mathf.Rad2Deg, 0);
+    }
+    public void LandEnd()
+    {
+        RotateBody(_curMoveInput.x != 0);
+        _isJumping = false;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if(_isJumping && collision.collider is TerrainCollider)
