@@ -212,9 +212,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curValue: 0
-  startValue: 0
-  maxValue: 0
-  PassiveValue: 0
+  startValue: 1000
+  maxValue: 1000
+  PassiveValue: 10
   uiBar: {fileID: 0}
 --- !u!1 &86173465
 GameObject:
