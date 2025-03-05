@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class PlayerAnimation : MonoBehaviour
+public class PlayerModelAnimation : MonoBehaviour
 {
     Animator animator;
     Rigidbody _rigidbody;

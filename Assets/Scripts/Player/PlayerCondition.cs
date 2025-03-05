@@ -2,17 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCondition : MonoBehaviour
+public class PlayerCondition : MonoBehaviour,IDamagable
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] Condition health;
+    [SerializeField] Condition stamina;
+
+    private void Update()
     {
-        
+        health.ChangeValue(health.PassiveValue*Time.deltaTime);
+        stamina.ChangeValue(stamina.PassiveValue*Time.deltaTime);
     }
 
-    // Update is called once per frame
-    void Update()
+
+
+    public void TakeDamage(float damage)
     {
-        
+        health.ChangeValue(-damage);
     }
+
 }
