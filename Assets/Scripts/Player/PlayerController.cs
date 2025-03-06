@@ -41,9 +41,6 @@ public class PlayerController : MonoBehaviour
 
     List<MoveState> _curMoveState;
     [SerializeField] float exhaustTime;
-    //bool _isSprint;
-    //bool _isWalk;
-    //public bool _isJumping;
 
     float _rotateTargetDegree;
 
@@ -129,9 +126,9 @@ public class PlayerController : MonoBehaviour
             _curMoveInput = Vector2.zero;
         }
         MoveAnimationUpdate();
-        if (!_curMoveState.Contains(MoveState.Jump)/*!_isJumping*/)
+        if (!_curMoveState.Contains(MoveState.Jump))
         {
-            if (_curMoveState[0]==MoveState.Sprint/*_isSprint*/ && _curMoveInput.y <= 0)
+            if (_curMoveState[0]==MoveState.Sprint && _curMoveInput.y <= 0)
             {
                 RotateBody(_curMoveInput.x != 0);
             }
@@ -164,7 +161,6 @@ public class PlayerController : MonoBehaviour
             {
                 RotateBody();
             }
-            //_isJumping = true;
         }
         ChangeStaminaPassive();
     }
@@ -174,19 +170,17 @@ public class PlayerController : MonoBehaviour
         if (context.performed)
         {
             _curMoveState.Insert(0,MoveState.Sprint);
-            //_isSprint = true;
             if(!_curMoveState.Contains(MoveState.Exhauste))
                 _animator.SetBool("Sprint",true);
         }
         else if (context.canceled)
         {
             _curMoveState.Remove(MoveState.Sprint);
-            //_isSprint = false;
             _animator.SetBool("Sprint", false);
         }
-        if (!_curMoveState.Contains(MoveState.Jump)/*!_isJumping*/)
+        if (!_curMoveState.Contains(MoveState.Jump))
         {
-            if (_curMoveState[0] == MoveState.Sprint/*_isSprint*/ && _curMoveInput.y <= 0)
+            if (_curMoveState[0] == MoveState.Sprint && _curMoveInput.y <= 0)
             {
                 RotateBody(_curMoveInput.x != 0);
             }
@@ -203,13 +197,11 @@ public class PlayerController : MonoBehaviour
         {
             if (!_curMoveState.Contains(MoveState.Walk))
                 _curMoveState.Insert(0, MoveState.Walk);
-            //_isWalk = true;
             _animator.SetBool("Walk", true);
         }
         else if (context.canceled)
         {
             _curMoveState.Remove(MoveState.Walk);
-            //_isWalk = false;
             if(_curMoveState.Contains(MoveState.Exhauste))
                 _animator.SetBool("Walk", false);
         }
@@ -231,12 +223,11 @@ public class PlayerController : MonoBehaviour
         _curMoveState.Remove(MoveState.Jump);
         RotateBody(_curMoveInput.x != 0);
         ChangeStaminaPassive();
-        //_isJumping = false;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(_curMoveState.Contains(MoveState.Jump)/*_isJumping*/ && collision.collider is TerrainCollider)
+        if(_curMoveState.Contains(MoveState.Jump) && collision.collider is TerrainCollider)
         {
             _animator.SetTrigger("Land");
         }
