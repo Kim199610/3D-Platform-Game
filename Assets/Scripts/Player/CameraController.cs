@@ -56,7 +56,7 @@ public class CameraController : MonoBehaviour
     }
     void CameraMove()
     {
-        ray = new Ray(transform.position, transform.localRotation * Vector3.back);
+        ray = new Ray(transform.position, transform.TransformDirection(Vector3.back));
         if (Physics.Raycast(ray, out hit, maxZoomOut,layerMask))
         {
             Debug.Log($"충돌감지 충돌물체 {hit.collider.name}");
