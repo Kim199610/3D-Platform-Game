@@ -2,11 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Conditions
-{
-    Health,
-    Stamina
-}
 public class PlayerCondition : MonoBehaviour,IDamagable
 {
     PlayerController controller;
