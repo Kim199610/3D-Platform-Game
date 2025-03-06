@@ -11,7 +11,8 @@ public enum MoveState
     Run,
     Walk,
     Idle,
-    Jump
+    Jump,
+    Exhauste
 }
 public class PlayerController : MonoBehaviour
 {
@@ -39,7 +40,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float jumpStamina;
 
     List<MoveState> _curMoveState;
-
+    [SerializeField] float exhaustTime;
     //bool _isSprint;
     //bool _isWalk;
     //public bool _isJumping;
@@ -91,16 +92,23 @@ public class PlayerController : MonoBehaviour
             _rigidbody.velocity += new Vector3(moveDirection.normalized.x, 0, moveDirection.normalized.z) * 0.2f;
             return;
         }
-
-        switch (_curMoveState[0])
+        if (_curMoveState.Contains(MoveState.Exhauste))
         {
-            case MoveState.Sprint:
-                moveDirection *= moveSpeed * sprintSpeedRate; break;
-            case MoveState.Walk:
-                moveDirection *= _walkSpeed; break;
-            default:
-                moveDirection *= moveSpeed; break;
+            moveDirection *= _walkSpeed;
         }
+        else
+        {
+            switch (_curMoveState[0])
+            {
+                case MoveState.Sprint:
+                    moveDirection *= moveSpeed * sprintSpeedRate; break;
+                case MoveState.Walk:
+                    moveDirection *= _walkSpeed; break;
+                default:
+                    moveDirection *= moveSpeed; break;
+            }
+        }
+        
         
         _rigidbody.velocity = moveDirection;
     }
@@ -146,11 +154,11 @@ public class PlayerController : MonoBehaviour
     
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.started && !_curMoveState.Contains(MoveState.Jump))
+        if (!_curMoveState.Contains(MoveState.Exhauste) && context.started && !_curMoveState.Contains(MoveState.Jump))
         {
             if (!_playerCondition.ConsumStamina(jumpStamina))
                 return;
-            _curMoveState.Insert(0,MoveState.Jump);
+            _curMoveState.Add(MoveState.Jump);
             _animator.SetTrigger("Jump");
             if (_curMoveInput != Vector2.zero)
             {
@@ -167,7 +175,8 @@ public class PlayerController : MonoBehaviour
         {
             _curMoveState.Insert(0,MoveState.Sprint);
             //_isSprint = true;
-            _animator.SetBool("Sprint",true);
+            if(!_curMoveState.Contains(MoveState.Exhauste))
+                _animator.SetBool("Sprint",true);
         }
         else if (context.canceled)
         {
@@ -192,7 +201,8 @@ public class PlayerController : MonoBehaviour
     {
         if (context.performed)
         {
-            _curMoveState.Insert(0,MoveState.Walk);
+            if (!_curMoveState.Contains(MoveState.Walk))
+                _curMoveState.Insert(0, MoveState.Walk);
             //_isWalk = true;
             _animator.SetBool("Walk", true);
         }
@@ -200,7 +210,8 @@ public class PlayerController : MonoBehaviour
         {
             _curMoveState.Remove(MoveState.Walk);
             //_isWalk = false;
-            _animator.SetBool("Walk", false);
+            if(_curMoveState.Contains(MoveState.Exhauste))
+                _animator.SetBool("Walk", false);
         }
         ChangeStaminaPassive();
     }
@@ -232,12 +243,29 @@ public class PlayerController : MonoBehaviour
     }
     void ChangeStaminaPassive()
     {
-        if(_curMoveState.Contains(MoveState.Jump))
-            _playerCondition.ChangeStaminaPassive(MoveState.Jump);
-        else
-        {
-            _playerCondition.ChangeStaminaPassive(_curMoveState[0]);
-        }
-            
+        _playerCondition.ChangeStaminaPassive(_curMoveState);
+    }
+    public void Exhauste()
+    {
+        _playerCondition.StartStaminaWarning();
+
+        if (!_curMoveState.Contains(MoveState.Exhauste))
+            _curMoveState.Add(MoveState.Exhauste);
+
+        _animator.SetBool("Sprint", false);
+        _animator.SetBool("Walk", true);
+
+        ChangeStaminaPassive();
+
+        Invoke("ExhausteEnd",exhaustTime);
+    }
+    void ExhausteEnd()
+    {
+        _playerCondition.StopStaminaWarning();
+        _curMoveState.Remove(MoveState.Exhauste);
+        _animator.SetBool("Sprint", _curMoveState.Contains(MoveState.Sprint));
+        _animator.SetBool("Walk",_curMoveState.Contains(MoveState.Walk));
+
+        ChangeStaminaPassive();
     }
 }
