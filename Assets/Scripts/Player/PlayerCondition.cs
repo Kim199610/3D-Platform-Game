@@ -59,7 +59,8 @@ public class PlayerCondition : MonoBehaviour,IDamagable
             return false;
         }
             
-
+        if(stamina.curValue < value)
+            controller.Exhauste();
         stamina.ChangeValue(-value);
         return true;
     }

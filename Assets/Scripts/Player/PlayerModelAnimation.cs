@@ -28,7 +28,11 @@ public class PlayerModelAnimation : MonoBehaviour
     }
     public void Jump()
     {
-        _rigidbody.AddForce(Vector3.up * controller.jumpPower, ForceMode.Impulse);
+        Vector3 velocity = _rigidbody.velocity;
+        _rigidbody.velocity = new Vector3(velocity.x, controller.jumpPower, velocity.z);
+        if (!controller._curMoveState.Contains(MoveState.Jump))
+            controller._curMoveState.Add(MoveState.Jump);
+        //_rigidbody.AddForce(Vector3.up * controller.jumpPower, ForceMode.Impulse);
     }
     public void LandStart()
     {

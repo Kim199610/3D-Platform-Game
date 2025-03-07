@@ -38,13 +38,12 @@ public class PlayerController : MonoBehaviour
     public float sprintSpeedRate;
     [SerializeField] float _walkSpeed;
     [SerializeField] float jumpStamina;
-
-    List<MoveState> _curMoveState;
     [SerializeField] float exhaustTime;
-
+    [SerializeField] LayerMask groundLayerMask;
+    public List<MoveState> _curMoveState;
     float _rotateTargetDegree;
 
-   
+    [SerializeField]bool _isGround;
 
     private void Awake()
     {
@@ -59,8 +58,16 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        
         Move();
         RotateBodyUpdate();
+        _isGround = IsGround();
+        _animator.SetBool("Land",_isGround);
+        if (!_isGround && !_curMoveState.Contains(MoveState.Jump) && CheckRealFall())
+        {
+            _rigidbody.velocity = new Vector3(_rigidbody.velocity.x,0,_rigidbody.velocity.z);
+            Fall();
+        }
     }
     private void LateUpdate()
     {
@@ -86,7 +93,7 @@ public class PlayerController : MonoBehaviour
 
         if (_curMoveState.Contains(MoveState.Jump))
         {
-            _rigidbody.velocity += new Vector3(moveDirection.normalized.x, 0, moveDirection.normalized.z) * 0.1f;
+            _rigidbody.velocity += new Vector3(moveDirection.normalized.x, 0, moveDirection.normalized.z) * 0.08f;
             return;
         }
         if (_curMoveState.Contains(MoveState.Exhauste))
@@ -101,6 +108,8 @@ public class PlayerController : MonoBehaviour
                     moveDirection *= moveSpeed * sprintSpeedRate; break;
                 case MoveState.Walk:
                     moveDirection *= _walkSpeed; break;
+                case MoveState.Idle:
+                    moveDirection = Vector3.zero; break;
                 default:
                     moveDirection *= moveSpeed; break;
             }
@@ -145,7 +154,7 @@ public class PlayerController : MonoBehaviour
         {
             if (!_playerCondition.ConsumStamina(jumpStamina))
                 return;
-            _curMoveState.Add(MoveState.Jump);
+            
             _animator.SetTrigger("Jump");
             if (_curMoveInput != Vector2.zero)
             {
@@ -219,7 +228,7 @@ public class PlayerController : MonoBehaviour
         float degree = Mathf.Atan2(_curMoveInput.x, _curMoveInput.y);
         _rotateTargetDegree = degree * Mathf.Rad2Deg;
     }
-
+    
     void RotateBodyUpdate()
     {
         _animator.transform.localRotation = Quaternion.RotateTowards(_animator.transform.localRotation, Quaternion.Euler(0, _rotateTargetDegree, 0), 10);
@@ -229,14 +238,6 @@ public class PlayerController : MonoBehaviour
         _curMoveState.Remove(MoveState.Jump);
         RotateBody();
         ChangeStaminaPassive();
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(_curMoveState.Contains(MoveState.Jump) && collision.collider is TerrainCollider)
-        {
-            _animator.SetTrigger("Land");
-        }
     }
     void ChangeStaminaPassive()
     {
@@ -265,10 +266,43 @@ public class PlayerController : MonoBehaviour
     }
     public void Fall()
     {
-        _curMoveState.Add(MoveState.Jump);
+        if(!_curMoveState.Contains(MoveState.Jump))
+            _curMoveState.Add(MoveState.Jump);
         _animator.SetTrigger("Fall");
         JumpRotate();
         ChangeStaminaPassive();
     }
 
+    bool IsGround()
+    {
+        Ray[] rays = new Ray[4]
+        {
+            new Ray(transform.position + (transform.forward * 0.2f) +(transform.up*0.01f),Vector3.down),
+            new Ray(transform.position + (transform.up*0.01f),Vector3.down),
+            new Ray(transform.position + (transform.right * 0.2f) +(transform.up*0.01f),Vector3.down),
+            new Ray(transform.position + (-transform.right * 0.2f) +(transform.up*0.01f),Vector3.down),
+        };
+        
+        for (int i = 0; i < rays.Length; i++)
+        {
+            if (Physics.Raycast(rays[i], 0.2f, groundLayerMask))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    bool CheckRealFall()
+    {
+        if (Physics.Raycast(transform.position + (transform.forward * 0.19f) + (transform.up * 0.01f), Vector3.down, 1f, groundLayerMask))
+        {
+            _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, 0, _rigidbody.velocity.z);
+            if (Physics.Raycast(transform.position + (transform.up * 0.01f), Vector3.down, out RaycastHit hit, 1f, groundLayerMask))
+            {
+                transform.position = Vector3.MoveTowards(transform.position, hit.point, 1f);
+            }
+            return false;
+        }
+        return true;
+    }
 }
