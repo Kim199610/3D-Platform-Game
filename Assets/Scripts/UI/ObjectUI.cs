@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class ObjectUI : MonoBehaviour
 {
     public BaseObjData data;
+    public Transform targetObj;
+    Camera _camera;
 
     public TextMeshProUGUI nameText;
     public RectTransform nameBoxRectTransform;
@@ -14,9 +16,14 @@ public class ObjectUI : MonoBehaviour
     public RectTransform descriptionBoxRectTransform;
 
     public Image crossHair;
-
+    private void LateUpdate()
+    {
+        transform.position = _camera.WorldToScreenPoint(targetObj.position);
+    }
     public void Init()
     {
+        _camera = Camera.main;
+        data = targetObj.GetComponent<BaseObject>().baseObjData;
         nameText.text = $"[{data.objectName}]";
         UpdateNameBackgroundSize();
         descriptionText.text = data.description;

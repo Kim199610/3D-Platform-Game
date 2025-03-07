@@ -19,7 +19,7 @@ public class CameraController : MonoBehaviour
     Ray ray;
     RaycastHit hit;
 
-    Vector3 _thirdCameraPos = new Vector3(0, 2f, 0);
+    Vector3 _thirdCameraPos = new Vector3(0, 1.6f, 0);
     Vector3 _firstCameraPos = new Vector3(0, 1.55f, 0.2f);
     private void Awake()
     {
@@ -57,27 +57,27 @@ public class CameraController : MonoBehaviour
     void CameraMove()
     {
         ray = new Ray(transform.position, transform.TransformDirection(Vector3.back));
-        if (Physics.Raycast(ray, out hit, maxZoomOut,layerMask))
+        //if (Physics.Raycast(ray, out hit, maxZoomOut,layerMask))
+        //{
+        //    Debug.Log($"충돌감지 충돌물체 {hit.collider.name}");
+        //    if (hit.distance <= -_camera.transform.localPosition.z && hit.distance < -_targetDistance)
+        //    {
+        //        _camera.transform.localPosition = new Vector3(0, 0, -hit.distance);
+        //        return;
+        //    }
+        //}
+        //_camera.transform.localPosition = Vector3.MoveTowards(_camera.transform.localPosition, new Vector3(0, 0, _targetDistance), 5 * Time.deltaTime);
+
+
+
+        if (Physics.Raycast(ray, out hit, maxZoomOut) && hit.distance <= -_camera.transform.localPosition.z && hit.distance < -_targetDistance)
         {
-            Debug.Log($"충돌감지 충돌물체 {hit.collider.name}");
-            if (hit.distance <= -_camera.transform.localPosition.z && hit.distance < -_targetDistance)
-            {
-                _camera.transform.localPosition = new Vector3(0, 0, -hit.distance);
-                return;
-            }
+            _camera.transform.localPosition = new Vector3(0, 0, -hit.distance);
         }
-        _camera.transform.localPosition = Vector3.MoveTowards(_camera.transform.localPosition, new Vector3(0, 0, _targetDistance), 5 * Time.deltaTime);
-
-
-
-        //if (Physics.Raycast(ray, out hit, maxZoomOut) && hit.distance <= -_camera.transform.localPosition.z && hit.distance < -_targetDistance)
-        //{
-        //    _camera.transform.localPosition = new Vector3(0, 0, -hit.distance);
-        //}
-        //else
-        //{
-        //    _camera.transform.localPosition = Vector3.MoveTowards(_camera.transform.localPosition, new Vector3(0, 0, _targetDistance), 5 * Time.deltaTime);
-        //}
+        else
+        {
+            _camera.transform.localPosition = Vector3.MoveTowards(_camera.transform.localPosition, new Vector3(0, 0, _targetDistance), 5 * Time.deltaTime);
+        }
 
     }
 }

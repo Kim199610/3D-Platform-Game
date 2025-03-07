@@ -82,11 +82,11 @@ public class PlayerController : MonoBehaviour
     {
         
         Vector3 moveDirection = transform.forward * _curMoveInput.y + transform.right * _curMoveInput.x;
-        moveDirection.y = _rigidbody.velocity.y;
+        
 
         if (_curMoveState.Contains(MoveState.Jump))
         {
-            _rigidbody.velocity += new Vector3(moveDirection.normalized.x, 0, moveDirection.normalized.z) * 0.2f;
+            _rigidbody.velocity += new Vector3(moveDirection.normalized.x, 0, moveDirection.normalized.z) * 0.1f;
             return;
         }
         if (_curMoveState.Contains(MoveState.Exhauste))
@@ -105,7 +105,7 @@ public class PlayerController : MonoBehaviour
                     moveDirection *= moveSpeed; break;
             }
         }
-        
+        moveDirection.y = _rigidbody.velocity.y;
         
         _rigidbody.velocity = moveDirection;
     }
@@ -126,17 +126,7 @@ public class PlayerController : MonoBehaviour
             _curMoveInput = Vector2.zero;
         }
         MoveAnimationUpdate();
-        if (!_curMoveState.Contains(MoveState.Jump))
-        {
-            if (_curMoveState[0]==MoveState.Sprint && _curMoveInput.y <= 0)
-            {
-                RotateBody(_curMoveInput.x != 0);
-            }
-            else
-            {
-                _rotateTargetDegree = 0;
-            }
-        }
+        RotateBody();
         ChangeStaminaPassive();
 
     }
@@ -159,7 +149,7 @@ public class PlayerController : MonoBehaviour
             _animator.SetTrigger("Jump");
             if (_curMoveInput != Vector2.zero)
             {
-                RotateBody();
+                JumpRotate();
             }
         }
         ChangeStaminaPassive();
@@ -169,26 +159,15 @@ public class PlayerController : MonoBehaviour
     {
         if (context.performed)
         {
-            _curMoveState.Insert(0,MoveState.Sprint);
-            if(!_curMoveState.Contains(MoveState.Exhauste))
-                _animator.SetBool("Sprint",true);
+            if (!_curMoveState.Contains(MoveState.Sprint))
+                _curMoveState.Insert(0,MoveState.Sprint);
         }
         else if (context.canceled)
         {
             _curMoveState.Remove(MoveState.Sprint);
-            _animator.SetBool("Sprint", false);
         }
-        if (!_curMoveState.Contains(MoveState.Jump))
-        {
-            if (_curMoveState[0] == MoveState.Sprint && _curMoveInput.y <= 0)
-            {
-                RotateBody(_curMoveInput.x != 0);
-            }
-            else
-            {
-                _rotateTargetDegree = 0;
-            }
-        }
+        RotateBody();
+        ChangeAnimation();
         ChangeStaminaPassive();
     }
     public void OnWalk(InputAction.CallbackContext context)
@@ -197,23 +176,50 @@ public class PlayerController : MonoBehaviour
         {
             if (!_curMoveState.Contains(MoveState.Walk))
                 _curMoveState.Insert(0, MoveState.Walk);
-            _animator.SetBool("Walk", true);
         }
         else if (context.canceled)
         {
             _curMoveState.Remove(MoveState.Walk);
-            if(_curMoveState.Contains(MoveState.Exhauste))
-                _animator.SetBool("Walk", false);
         }
+        RotateBody();
+        ChangeAnimation();
         ChangeStaminaPassive();
     }
-    void RotateBody(bool isSideSprint = false)
+    void ChangeAnimation()
+    {
+        if (!_curMoveState.Contains(MoveState.Exhauste))
+        {
+            _animator.SetBool("Sprint", _curMoveState[0] == MoveState.Sprint);
+            _animator.SetBool("Walk", _curMoveState[0] == MoveState.Walk);
+        }
+        else
+        {
+            _animator.SetBool("Sprint", false);
+            _animator.SetBool("Walk", true);
+        }
+    }
+    void RotateBody()
+    {
+        if (_curMoveState.Contains(MoveState.Jump))
+            return;
+        if (_curMoveState.Contains(MoveState.Exhauste) || _curMoveState[0] != MoveState.Sprint)
+        {
+            _rotateTargetDegree = 0;
+        }
+        else
+        {
+            float degree = Mathf.Atan2(_curMoveInput.x, _curMoveInput.y);
+            if (_curMoveInput.x != 0)
+                degree = Mathf.Sign(degree) * (Mathf.Abs(degree) - Mathf.PI / 4);
+            _rotateTargetDegree = degree * Mathf.Rad2Deg;
+        }
+    }
+    void JumpRotate()
     {
         float degree = Mathf.Atan2(_curMoveInput.x, _curMoveInput.y);
-        if(isSideSprint)
-            degree = Mathf.Sign(degree) * (Mathf.Abs(degree) - Mathf.PI / 4);
         _rotateTargetDegree = degree * Mathf.Rad2Deg;
     }
+
     void RotateBodyUpdate()
     {
         _animator.transform.localRotation = Quaternion.RotateTowards(_animator.transform.localRotation, Quaternion.Euler(0, _rotateTargetDegree, 0), 10);
@@ -221,7 +227,7 @@ public class PlayerController : MonoBehaviour
     public void LandEnd()
     {
         _curMoveState.Remove(MoveState.Jump);
-        RotateBody(_curMoveInput.x != 0);
+        RotateBody();
         ChangeStaminaPassive();
     }
 
@@ -243,9 +249,8 @@ public class PlayerController : MonoBehaviour
         if (!_curMoveState.Contains(MoveState.Exhauste))
             _curMoveState.Add(MoveState.Exhauste);
 
-        _animator.SetBool("Sprint", false);
-        _animator.SetBool("Walk", true);
-
+        RotateBody();
+        ChangeAnimation();
         ChangeStaminaPassive();
 
         Invoke("ExhausteEnd",exhaustTime);
@@ -254,9 +259,16 @@ public class PlayerController : MonoBehaviour
     {
         _playerCondition.StopStaminaWarning();
         _curMoveState.Remove(MoveState.Exhauste);
-        _animator.SetBool("Sprint", _curMoveState.Contains(MoveState.Sprint));
-        _animator.SetBool("Walk",_curMoveState.Contains(MoveState.Walk));
-
+        RotateBody();
+        ChangeAnimation();
         ChangeStaminaPassive();
     }
+    public void Fall()
+    {
+        _curMoveState.Add(MoveState.Jump);
+        _animator.SetTrigger("Fall");
+        JumpRotate();
+        ChangeStaminaPassive();
+    }
+
 }
