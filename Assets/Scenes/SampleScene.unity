@@ -2012,7 +2012,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1933056166}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: ConditionUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2084,7 +2084,7 @@ GameObject:
   - component: {fileID: 1989420936}
   - component: {fileID: 1989420935}
   m_Layer: 0
-  m_Name: Crosshiar
+  m_Name: Crosshair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
