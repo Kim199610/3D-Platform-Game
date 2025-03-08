@@ -58,16 +58,18 @@ public class PlayerController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        
+
         Move();
         RotateBodyUpdate();
         _isGround = IsGround();
+        _rigidbody.useGravity = (_curMoveState.Contains(MoveState.Jump));
         _animator.SetBool("Land",_isGround);
         if (!_isGround && !_curMoveState.Contains(MoveState.Jump) && CheckRealFall())
         {
             _rigidbody.velocity = new Vector3(_rigidbody.velocity.x,0,_rigidbody.velocity.z);
             Fall();
         }
+        
     }
     private void LateUpdate()
     {
@@ -87,7 +89,7 @@ public class PlayerController : MonoBehaviour
     }
     void Move()
     {
-        
+
         Vector3 moveDirection = transform.forward * _curMoveInput.y + transform.right * _curMoveInput.x;
         
 
@@ -115,7 +117,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         moveDirection.y = _rigidbody.velocity.y;
-        
+
         _rigidbody.velocity = moveDirection;
     }
     
@@ -301,4 +303,19 @@ public class PlayerController : MonoBehaviour
         }
         return true;
     }
+
+    //private void OnCollisionStay(Collision collision)
+    //{
+    //    for (int i = 0;i < collision.contacts.Length; i++)
+    //    {
+    //        if (Vector3.Angle(collision.contacts[i].normal, Vector3.up) > 45f)
+    //        {
+
+    //        }
+    //        else
+    //        {
+
+    //        }
+    //    }
+    //}
 }
