@@ -45,6 +45,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]bool _isGround;
 
+    bool slide;
+    Vector3 slideNormalVector;
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();   
@@ -117,6 +119,11 @@ public class PlayerController : MonoBehaviour
             }
         }
         moveDirection.y = _rigidbody.velocity.y;
+
+        if (slide)
+        {
+            moveDirection = Slide(moveDirection);
+        }
 
         _rigidbody.velocity = moveDirection;
     }
@@ -304,18 +311,23 @@ public class PlayerController : MonoBehaviour
         return true;
     }
 
-    //private void OnCollisionStay(Collision collision)
-    //{
-    //    for (int i = 0;i < collision.contacts.Length; i++)
-    //    {
-    //        if (Vector3.Angle(collision.contacts[i].normal, Vector3.up) > 45f)
-    //        {
-
-    //        }
-    //        else
-    //        {
-
-    //        }
-    //    }
-    //}
+    private void OnCollisionStay(Collision collision)
+    {
+        slide = false;
+        for (int i = 0; i < collision.contacts.Length; i++)
+        {
+            if (Vector3.Angle(collision.contacts[i].normal, Vector3.up) > 45f)
+            {
+                slide = true;
+                slideNormalVector = collision.contacts[i].normal;
+            }
+        }
+    }
+    Vector3 Slide(Vector3 moveDirection)
+    {
+        Vector3 moveHoriz = new Vector3(moveDirection.x,0,moveDirection.z);
+        Vector3 projectMoveHoriz = Vector3.ProjectOnPlane(moveHoriz, slideNormalVector).normalized;
+        moveDirection = projectMoveHoriz.normalized * Mathf.Lerp(projectMoveHoriz.magnitude, moveHoriz.magnitude, 0.5f);
+        return moveDirection;
+    }
 }

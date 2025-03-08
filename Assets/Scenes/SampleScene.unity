@@ -2011,8 +2011,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cameraContainer: {fileID: 1422798456}
   _lookSensitivity: 0.2
-  minXLook: -85
-  maxXLook: 85
+  minXLook: -100
+  maxXLook: 75
   moveSpeed: 6
   jumpPower: 7
   sprintSpeedRate: 1.8
