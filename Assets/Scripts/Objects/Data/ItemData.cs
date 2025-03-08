@@ -27,9 +27,7 @@ public class ItemData : BaseObjData
     public Sprite icon;
     public GameObject dropPrefab;
 
-    [Header("Stacking")]
-    public bool canStack;
-    public int maxStackAmount;
+    
 
     [Header("Consumable")]
     public ItemDataConsumable[] consumables;

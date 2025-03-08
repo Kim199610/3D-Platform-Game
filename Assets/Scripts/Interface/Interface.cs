@@ -6,3 +6,8 @@ interface IDamagable
 {
     void TakeDamage(float damage);
 }
+public interface IInteractable
+{
+    public string GetInteractPrompt();
+    public void OnInteract();
+}

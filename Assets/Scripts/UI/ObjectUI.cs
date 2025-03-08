@@ -14,8 +14,14 @@ public class ObjectUI : MonoBehaviour
     public RectTransform nameBoxRectTransform;
     public TextMeshProUGUI descriptionText;
     public RectTransform descriptionBoxRectTransform;
+    bool sizeFit = false;
 
     public Image crossHair;
+    private void Update()
+    {
+        UpdateDescriptionBackgroundSize();
+        UpdateNameBackgroundSize();
+    }
     private void LateUpdate()
     {
         transform.position = _camera.WorldToScreenPoint(targetObj.position);
@@ -25,19 +31,21 @@ public class ObjectUI : MonoBehaviour
         _camera = Camera.main;
         data = targetObj.GetComponent<BaseObject>().baseObjData;
         nameText.text = $"[{data.objectName}]";
-        UpdateNameBackgroundSize();
         descriptionText.text = data.description;
-        UpdateDescriptionBackgroundSize();
 
         descriptionBoxRectTransform.gameObject.SetActive(false);
     }
+    private void OnEnable()
+    {
+        
+    }
     void UpdateNameBackgroundSize()
     {
-        nameBoxRectTransform.sizeDelta = new Vector2(30 + (data.objectName.Length) * 20, 30);
+        nameBoxRectTransform.sizeDelta = nameText.rectTransform.sizeDelta + new Vector2(10,10);
     }
     void UpdateDescriptionBackgroundSize()
     {
-        descriptionBoxRectTransform.sizeDelta = new Vector2(250, ((data.description.Length / 13) + 1) * 20 + 30);
+        descriptionBoxRectTransform.sizeDelta = descriptionText.rectTransform.sizeDelta + new Vector2(10, 10);
     }
 
     public void DescriptionActive(bool active)

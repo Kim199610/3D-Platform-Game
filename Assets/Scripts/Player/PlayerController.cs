@@ -66,9 +66,10 @@ public class PlayerController : MonoBehaviour
         _isGround = IsGround();
         _rigidbody.useGravity = (_curMoveState.Contains(MoveState.Jump));
         _animator.SetBool("Land",_isGround);
-        if (!_isGround && !_curMoveState.Contains(MoveState.Jump) && CheckRealFall())
+
+        if (!_isGround && !_curMoveState.Contains(MoveState.Jump) && CheckRealFall()) //추락판정조건
         {
-            _rigidbody.velocity = new Vector3(_rigidbody.velocity.x,0,_rigidbody.velocity.z);
+            _rigidbody.velocity = new Vector3(_rigidbody.velocity.x,0,_rigidbody.velocity.z); //추락일 경우 위로가던 속도제거=바로떨어짐
             Fall();
         }
         
@@ -120,7 +121,7 @@ public class PlayerController : MonoBehaviour
         }
         moveDirection.y = _rigidbody.velocity.y;
 
-        if (slide)
+        if (slide&&Vector3.Angle(moveDirection,slideNormalVector)>90)
         {
             moveDirection = Slide(moveDirection);
         }
@@ -203,7 +204,7 @@ public class PlayerController : MonoBehaviour
         ChangeAnimation();
         ChangeStaminaPassive();
     }
-    void ChangeAnimation()
+    void ChangeAnimation() //움직임에 따라 맞는 움직임애니메이션 상태 설정
     {
         if (!_curMoveState.Contains(MoveState.Exhauste))
         {
@@ -216,7 +217,7 @@ public class PlayerController : MonoBehaviour
             _animator.SetBool("Walk", true);
         }
     }
-    void RotateBody()
+    void RotateBody() //움직임에 따라 몸을 돌릴 방향을 설정
     {
         if (_curMoveState.Contains(MoveState.Jump))
             return;
@@ -232,23 +233,23 @@ public class PlayerController : MonoBehaviour
             _rotateTargetDegree = degree * Mathf.Rad2Deg;
         }
     }
-    void JumpRotate()
+    void JumpRotate() //점프직전 점프방향으로 몸방향 바꿈
     {
         float degree = Mathf.Atan2(_curMoveInput.x, _curMoveInput.y);
         _rotateTargetDegree = degree * Mathf.Rad2Deg;
     }
     
-    void RotateBodyUpdate()
+    void RotateBodyUpdate()//부드럽게 몸 방향 바꿈
     {
         _animator.transform.localRotation = Quaternion.RotateTowards(_animator.transform.localRotation, Quaternion.Euler(0, _rotateTargetDegree, 0), 10);
     }
-    public void LandEnd()
+    public void LandEnd() //착지모션 끝, 움직임 가능
     {
         _curMoveState.Remove(MoveState.Jump);
         RotateBody();
         ChangeStaminaPassive();
     }
-    void ChangeStaminaPassive()
+    void ChangeStaminaPassive()//상태에 따라 스테미나 회복량 바꿈
     {
         _playerCondition.ChangeStaminaPassive(_curMoveState);
     }
@@ -273,7 +274,7 @@ public class PlayerController : MonoBehaviour
         ChangeAnimation();
         ChangeStaminaPassive();
     }
-    public void Fall()
+    public void Fall()//추락판정
     {
         if(!_curMoveState.Contains(MoveState.Jump))
             _curMoveState.Add(MoveState.Jump);
@@ -301,7 +302,7 @@ public class PlayerController : MonoBehaviour
         }
         return false;
     }
-    bool CheckRealFall()
+    bool CheckRealFall()  //진짜 떨어지는지 여부 판별, 내리막길,작은단차 등은 추락판정에서 제외하는 기능
     {
         if (Physics.Raycast(transform.position + (transform.forward * 0.19f) + (transform.up * 0.01f), Vector3.down, 2f, groundLayerMask))
         {
@@ -311,7 +312,7 @@ public class PlayerController : MonoBehaviour
         return true;
     }
 
-    private void OnCollisionStay(Collision collision)
+    private void OnCollisionStay(Collision collision)  //벽(충돌각도가 45도이상인)감지
     {
         slide = false;
         for (int i = 0; i < collision.contacts.Length; i++)
@@ -323,7 +324,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    Vector3 Slide(Vector3 moveDirection)
+    Vector3 Slide(Vector3 moveDirection)  //벽에 비빌때 속도조정
     {
         Vector3 moveHoriz = new Vector3(moveDirection.x,0,moveDirection.z);
         Vector3 projectMoveHoriz = Vector3.ProjectOnPlane(moveHoriz, slideNormalVector).normalized;
