@@ -294,13 +294,9 @@ public class PlayerController : MonoBehaviour
     }
     bool CheckRealFall()
     {
-        if (Physics.Raycast(transform.position + (transform.forward * 0.19f) + (transform.up * 0.01f), Vector3.down, 1f, groundLayerMask))
+        if (Physics.Raycast(transform.position + (transform.forward * 0.19f) + (transform.up * 0.01f), Vector3.down, 2f, groundLayerMask))
         {
-            _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, 0, _rigidbody.velocity.z);
-            if (Physics.Raycast(transform.position + (transform.up * 0.01f), Vector3.down, out RaycastHit hit, 1f, groundLayerMask))
-            {
-                transform.position = Vector3.MoveTowards(transform.position, hit.point, 1f);
-            }
+            _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, -10, _rigidbody.velocity.z);
             return false;
         }
         return true;
