@@ -19,8 +19,12 @@ public class DetectingZone : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Object"))
         {
-            other.GetComponent<BaseItem>().indicateInfoBool = false;
-            _interact.baseObjects.Remove(other.GetComponent<BaseItem>());
+            BaseItem item = other.GetComponent<BaseItem>();
+            if(item != null)
+            {
+                item.indicateInfoBool = false;
+                _interact.baseObjects.Remove(item);
+            }
         }
     }
 }

@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034303931a1df504c9bd847e0ab740ba, type: 3}
   m_Name: DubleJumpBoots
   m_EditorClassIdentifier: 
+  type: 0
   objectName: "\uB354\uBE14\uC810\uD504 \uBD80\uCE20"
   description: "\uC7A5\uCC29\uC2DC \uACF5\uC911 \uB3C4\uC57D \uD69F\uC218\uAC00 \uB298\uC5B4\uB0A9\uB2C8\uB2E4.
     \uB2E4\uB978 \uBC84\uD504\uC640 \uC911\uBCF5\uAC00\uB2A5\uD569\uB2C8\uB2E4."
-  crossHiar: {fileID: 0}
-  crossHiarColor: {r: 0, g: 0, b: 0, a: 0}
+  crossHiar: {fileID: 7482667652216324306, guid: 2a46d0bd7868e214da4d7390244cb6a7, type: 3}
+  crossHiarColor: {r: 1, g: 0.9208172, b: 0, a: 0}
   canStack: 0
-  maxStackAmount: 0
-  type: 0
-  icon: {fileID: 0}
+  maxStackAmount: 1
+  icon: {fileID: 21300000, guid: 0af4e8100fe8d9b4d9a00b6784ce558d, type: 3}
   dropPrefab: {fileID: 0}
-  consumables: []
+  consumType: 0
+  value: 0
   equipPrefab: {fileID: 0}

@@ -11,7 +11,9 @@ public class Slot : MonoBehaviour
     [SerializeField] TextMeshProUGUI itemNameText;
     public GameObject selectedImg;
     [SerializeField] Image icon;
-    int amount;
+    public int amount { get; private set; }
+        
+    
 
     public BaseItemData baseItemData;
 
@@ -27,7 +29,7 @@ public class Slot : MonoBehaviour
         }
         if (inputBaseItemData != baseItemData)
         {
-            return amount;
+            return inputAmount;
         }
         if(amount + inputAmount > baseItemData.maxStackAmount)
         {
@@ -79,6 +81,7 @@ public class Slot : MonoBehaviour
                 }
             case ConsumableType.Buff:
                 {
+                    SkillManager.instance.ui_Buff.AddBuff(consumItemData.buffPrefab);
                     break;
                 }
         }
@@ -100,5 +103,19 @@ public class Slot : MonoBehaviour
     public void ActiveSelectImg(bool value)
     {
         selectedImg.SetActive(value);
+    }
+
+    public void ThrowItem(int value)
+    {
+        Player player = GameManager.Instance.Player;
+        BaseItem dropItem = Instantiate(baseItemData.dropPrefab, player.transform.position + player.transform.forward + Vector3.up, Quaternion.identity).GetComponent<BaseItem>();
+        dropItem.amount = value;
+        amount -= value;
+        updateSlot();
+    }
+    public void RemoveItem(int value)
+    {
+        amount -= value;
+        updateSlot();
     }
 }
