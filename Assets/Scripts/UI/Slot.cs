@@ -1,18 +1,104 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Slot : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] TextMeshProUGUI amountText;
+    [SerializeField] TextMeshProUGUI itemNameText;
+    public GameObject selectedImg;
+    [SerializeField] Image icon;
+    int amount;
+
+    public BaseItemData baseItemData;
+
+    private void Start()
     {
-        
+        updateSlot();
+    }
+    public int SetItem(BaseItemData inputBaseItemData,int inputAmount)
+    {
+        if(baseItemData == null)
+        {
+            baseItemData = inputBaseItemData;
+        }
+        if (inputBaseItemData != baseItemData)
+        {
+            return amount;
+        }
+        if(amount + inputAmount > baseItemData.maxStackAmount)
+        {
+            amount = baseItemData.maxStackAmount;
+            inputAmount = amount+inputAmount-baseItemData.maxStackAmount;
+        }
+        else if(amount + inputAmount < 0)
+        {
+            amount = 0;
+            inputAmount =  inputAmount-amount;
+        }
+        else
+        {
+            amount = amount + inputAmount;
+            inputAmount = 0;
+        }
+        updateSlot();
+        return inputAmount;
     }
 
-    // Update is called once per frame
-    void Update()
+    void updateSlot()
     {
-        
+        if (baseItemData != null && amount != 0)
+        {
+            amountText.gameObject.SetActive(true);
+            icon.gameObject.SetActive(true);
+            icon.sprite = baseItemData.icon;
+            amountText.text = amount.ToString();
+            amountText.gameObject.SetActive(amount > 1);
+        }
+        else
+        {
+            baseItemData = null;
+            amountText.gameObject.SetActive(false);
+            icon.gameObject.SetActive(false);
+        }
+    }
+    public void ConsumItem()
+    {
+        ConsumItemData consumItemData = (ConsumItemData)baseItemData;
+
+        switch (consumItemData.consumType)
+        {
+            case ConsumableType.Health:
+                {
+                    PlayerCondition condition = GameManager.Instance.Player.condition;
+                    condition.HealHealth(consumItemData.value);
+                    break;
+                }
+            case ConsumableType.Buff:
+                {
+                    break;
+                }
+        }
+        amount--;
+        updateSlot();
+    }
+
+    public void OnSlotClick()
+    {
+        if(baseItemData == null)
+        {
+            UIManager.Instance.ui_Inventory.SetSelectItem(null);
+        }
+        else
+        {
+            UIManager.Instance.ui_Inventory.SetSelectItem(this);
+        }
+    }
+    public void ActiveSelectImg(bool value)
+    {
+        selectedImg.SetActive(value);
     }
 }

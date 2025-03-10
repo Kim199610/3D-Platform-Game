@@ -64,6 +64,10 @@ public class PlayerCondition : MonoBehaviour,IDamagable
         stamina.ChangeValue(-value);
         return true;
     }
+    public void HealHealth(int value)
+    {
+        health.ChangeValue(value);
+    }
 
     public void TakeDamage(float damage)
     {

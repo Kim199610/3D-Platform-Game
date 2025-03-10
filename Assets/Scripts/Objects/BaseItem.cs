@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseObject : MonoBehaviour
+public class BaseItem : MonoBehaviour
 {
-    public BaseObjData baseObjData;
+    public BaseItemData baseItemData;
     public bool indicateInfoBool;
     protected bool indicateInfoPreBool;
     public bool showDescription;
     protected bool showdescriptionPre;
+    public int amount;
 
     protected ObjectUI objectUI;
 
@@ -18,6 +19,7 @@ public class BaseObject : MonoBehaviour
         indicateInfoPreBool = indicateInfoBool;
         showDescription = false;
         showdescriptionPre = showDescription;
+        amount = 1;
     }
     protected virtual void Update()
     {
@@ -41,5 +43,25 @@ public class BaseObject : MonoBehaviour
             objectUI.Init();
         }
         objectUI.gameObject.SetActive(active);
+    }
+    public void InteractItem()
+    {
+        if(baseItemData.type == ItemType.interactableObject)
+        {
+            //상호작용 기능 호출
+        }
+        else
+        {
+            amount = UIManager.Instance.ui_Inventory.SetItemToInventory(baseItemData,amount);
+            if (amount == 0)
+            {
+                DestroyItem();
+            }
+        }
+    }
+    void DestroyItem()
+    {
+        Destroy(objectUI.gameObject);
+        Destroy(this.gameObject);
     }
 }

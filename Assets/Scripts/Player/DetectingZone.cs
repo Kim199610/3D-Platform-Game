@@ -11,7 +11,7 @@ public class DetectingZone : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        BaseObject baseObject = other.GetComponent<BaseObject>();
+        BaseItem baseObject = other.GetComponent<BaseItem>();
         if (baseObject != null)
             _interact.baseObjects.Add(baseObject);
     }
@@ -19,8 +19,8 @@ public class DetectingZone : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Object"))
         {
-            other.GetComponent<BaseObject>().indicateInfoBool = false;
-            _interact.baseObjects.Remove(other.GetComponent<BaseObject>());
+            other.GetComponent<BaseItem>().indicateInfoBool = false;
+            _interact.baseObjects.Remove(other.GetComponent<BaseItem>());
         }
     }
 }

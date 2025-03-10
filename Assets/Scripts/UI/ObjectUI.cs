@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class ObjectUI : MonoBehaviour
 {
-    public BaseObjData data;
+    public BaseItemData data;
     public Transform targetObj;
     Camera _camera;
 
@@ -29,7 +29,7 @@ public class ObjectUI : MonoBehaviour
     public void Init()
     {
         _camera = Camera.main;
-        data = targetObj.GetComponent<BaseObject>().baseObjData;
+        data = targetObj.GetComponent<BaseItem>().baseItemData;
         nameText.text = $"[{data.objectName}]";
         descriptionText.text = data.description;
 

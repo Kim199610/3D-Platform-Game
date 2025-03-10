@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4515054548352635655}
   - component: {fileID: 4512448351228887915}
   - component: {fileID: 7604761319479391805}
-  - component: {fileID: 2060207004089699192}
   - component: {fileID: 8643678184421118366}
   m_Layer: 8
   m_Name: JumpPot
@@ -109,21 +108,6 @@ CapsuleCollider:
   m_Height: 0
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2060207004089699192
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8969617236523455216}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05a10f28fd702f4489521f5017f87c15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  baseObjData: {fileID: 11400000, guid: 2e292f4180746ef46bd3de5330e23b7c, type: 2}
-  indicateInfoBool: 0
-  showDescription: 0
 --- !u!114 &8643678184421118366
 MonoBehaviour:
   m_ObjectHideFlags: 0

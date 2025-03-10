@@ -9,10 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82d7c879e0352ad42aa63fc9066dd326, type: 3}
+  m_Script: {fileID: 11500000, guid: 034303931a1df504c9bd847e0ab740ba, type: 3}
   m_Name: JumpPot
   m_EditorClassIdentifier: 
-  objectName: "\uD2B8\uB7A8\uD384\uB9B0"
-  description: "\uB2FF\uC73C\uBA74 \uB192\uAC8C \uC810\uD504\uD569\uB2C8\uB2E4."
-  crossHiar: {fileID: 0}
-  crossHiarColor: {r: 1, g: 0.6998749, b: 0.21226418, a: 0}
+  type: 3
+  objectName: "\uC810\uD504\uB300"
+  description: "\uB2E4\uAC00\uAC00\uBA74 \uD06C\uAC8C \uB6F0\uC5B4\uC624\uB974\uAC8C
+    \uB418\uB294 \uC810\uD504\uB300\uC785\uB2C8\uB2E4."
+  crossHiar: {fileID: 7482667652216324306, guid: 3d6c557eb34d1a94988956274cf2c25d, type: 3}
+  crossHiarColor: {r: 1, g: 0, b: 0.96763754, a: 0}
+  canStack: 0
+  maxStackAmount: 0
+  icon: {fileID: 0}
+  dropPrefab: {fileID: 0}
+  consumType: 0
+  value: 0
+  equipPrefab: {fileID: 0}

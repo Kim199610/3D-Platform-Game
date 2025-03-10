@@ -2,9 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class BaseObjData : ScriptableObject
+public enum ItemType
 {
+    Equipalbe,
+    Consumable,
+    Resouce,
+    interactableObject
+}
+public class BaseItemData : ScriptableObject
+{
+    public ItemType type;
     public string objectName;
     public string description;
 
@@ -14,4 +21,7 @@ public class BaseObjData : ScriptableObject
     [Header("Stacking")]
     public bool canStack;
     public int maxStackAmount;
+
+    public Sprite icon;
+    public GameObject dropPrefab;
 }
