@@ -31,6 +31,15 @@ public class UIManager : MonoBehaviour
     public void OnInventory(InputAction.CallbackContext context)
     {
         ui_Inventory.gameObject.SetActive(!ui_Inventory.gameObject.activeSelf);
-        Cursor.lockState = ui_Inventory.gameObject.activeSelf? CursorLockMode.None : CursorLockMode.Locked;
+        if(ui_Inventory.gameObject.activeSelf)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            GameManager.Instance.Player.controller.isLookable = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            GameManager.Instance.Player.controller.isLookable = true;
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +12,7 @@ public class PlayerCondition : MonoBehaviour,IDamagable
     [SerializeField] float _normalStaminaPassive;
     [SerializeField] float _runStaminaPassive;
     [SerializeField] float _sprintStaminaPassive;
-
+    public event Action onTakeDamage;
     private void Awake()
     {
         controller = GetComponent<PlayerController>();
@@ -72,6 +73,7 @@ public class PlayerCondition : MonoBehaviour,IDamagable
     public void TakeDamage(float damage)
     {
         health.ChangeValue(-damage);
+        onTakeDamage?.Invoke();
     }
 
     public void StartStaminaWarning()

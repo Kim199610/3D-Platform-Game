@@ -2,18 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+public enum BuffName
+{
+    SpeedUp
+}
 
 public abstract class BaseBuff : MonoBehaviour
 {
     [SerializeField] protected Image curImag;
     [SerializeField] protected float increasSpeed;
     [SerializeField] protected float duration;
-    protected float startTime;
-
+    protected float startTime {  get; private set; }
     protected virtual void Start()
     {
-        StartCoroutine(BuffCorutine());
-        //BuffStart();              코루틴사용으로 필요없음
+        //StartCoroutine(BuffCorutine());
+        startTime = 0f;
+        BuffStart();
+    }
+    protected virtual void Update()
+    {
+        startTime += Time.deltaTime;
+        if (startTime >= duration)
+        {
+            BuffEnd();
+            Destroy(this.gameObject);
+        }
     }
     protected virtual void LateUpdate()
     {
@@ -21,34 +34,23 @@ public abstract class BaseBuff : MonoBehaviour
     }
     void UpdateImg()
     {
-        //if(Time.time - startTime >= duration)                 코루틴 사용으로 필요없음
-        //{
-        //    BuffEnd();
-        //}
-        curImag.fillAmount = 1 - ((Time.time - startTime) / duration);
+        curImag.fillAmount = 1 - ((startTime) / duration);
     }
-    //void BuffStart()                                  코루틴 사용으로 필요없음
+    //protected virtual IEnumerator BuffCorutine()                                  코루틴 사용시 코드
     //{
     //    startTime = Time.time;
-    //    playerController.moveSpeed += increasSpeed;
-    //}
-    //void BuffEnd()
-    //{
-    //    playerController.moveSpeed -= increasSpeed;
+    //    BuffStart();
+    //    yield return new WaitUntil(() => (Time.time - startTime >= duration));
+    //    BuffEnd();
     //    Destroy(this.gameObject);
     //}
-    protected virtual IEnumerator BuffCorutine()
-    {
-        startTime = Time.time;
-        BuffStart();
-        yield return new WaitUntil(() => (Time.time - startTime >= duration));
-        BuffEnd();
-        Destroy(this.gameObject);
-    }
     public virtual void RenewalBuff()
     {
-        startTime = Time.time;
+        startTime = 0f;
+        //StopCoroutine(BuffCorutine());
+        //StartCoroutine(BuffCorutine());
     }
+    public abstract BuffName GetBuffName();
 
     protected abstract void BuffStart();
     protected abstract void BuffEnd();

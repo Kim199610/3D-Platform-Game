@@ -43,6 +43,8 @@ public class PlayerController : MonoBehaviour
     public List<MoveState> _curMoveState;
     float _rotateTargetDegree;
 
+    public bool isLookable;
+
     [SerializeField]bool _isGround;
 
     bool slide;
@@ -56,6 +58,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        isLookable = true;
         _curMoveState = new List<MoveState> {MoveState.Idle,MoveState.Run};
     }
     private void FixedUpdate()
@@ -76,7 +79,11 @@ public class PlayerController : MonoBehaviour
     }
     private void LateUpdate()
     {
-        RotateLook();
+        if (isLookable)
+        {
+            RotateLook();
+        }
+        
     }
     public void OnLook(InputAction.CallbackContext context)
     {

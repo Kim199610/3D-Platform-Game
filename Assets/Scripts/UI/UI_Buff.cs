@@ -11,18 +11,17 @@ public class UI_Buff : MonoBehaviour
         BaseBuff buff = buffPrefab.GetComponent<BaseBuff>();
         for (int i = 0; i < buffs.Count; i++)
         {
-            if (buffs[i] == null)
+            if (buffs[i]==null)
             {
                 buffs.Remove(buffs[i]);
                 continue;
             }
-            if (buffs[i] == buff)
+            if (buffs[i].GetBuffName() == buff.GetBuffName())
             {
                 buffs[i].RenewalBuff();
                 return;
             }
         }
-        buffs.Add(buff);
-        Instantiate(buffPrefab, this.transform);
+        buffs.Add(Instantiate(buffPrefab, this.transform).GetComponent<BaseBuff>());
     }
 }

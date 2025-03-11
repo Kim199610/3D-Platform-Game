@@ -20,6 +20,7 @@ public class BaseItem : MonoBehaviour
         showDescription = false;
         showdescriptionPre = showDescription;
         amount = 1;
+        gameObject.layer = LayerMask.NameToLayer("Object");
     }
     protected virtual void Update()
     {

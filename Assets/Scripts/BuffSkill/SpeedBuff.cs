@@ -19,4 +19,8 @@ public class SpeedBuff : BaseBuff
     {
         playerController.moveSpeed -= increasSpeed;
     }
+    public override BuffName GetBuffName()
+    {
+        return BuffName.SpeedUp;
+    }
 }
