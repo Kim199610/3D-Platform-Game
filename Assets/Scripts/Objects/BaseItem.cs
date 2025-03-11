@@ -65,4 +65,9 @@ public class BaseItem : MonoBehaviour
         Destroy(objectUI.gameObject);
         Destroy(this.gameObject);
     }
+
+    public void IsInteractable(bool value)
+    {
+        objectUI.IsInteractable(value);
+    }
 }

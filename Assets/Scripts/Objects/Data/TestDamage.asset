@@ -18,7 +18,7 @@ MonoBehaviour:
     \uC8FC\uB294 \uD14C\uC2A4\uD2B8\uC6A9 \uACF0\uC785\uB2C8\uB2E4. \uC6C0\uC9C1\uC774\uC9C4
     \uC54A\uC2B5\uB2C8\uB2E4."
   crossHiar: {fileID: 0}
-  crossHiarColor: {r: 0, g: 0, b: 0, a: 0}
+  crossHiarColor: {r: 1, g: 0, b: 0, a: 1}
   canStack: 0
   maxStackAmount: 0
   icon: {fileID: 0}

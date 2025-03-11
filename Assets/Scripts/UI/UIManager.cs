@@ -7,7 +7,9 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
     public UI_Inventory ui_Inventory;
+    public UI_Game ui_game;
 
+    
     private void Awake()
     {
         if(Instance == null)
@@ -28,18 +30,5 @@ public class UIManager : MonoBehaviour
     public Transform objectUIs;
     public GameObject objectUI;
 
-    public void OnInventory(InputAction.CallbackContext context)
-    {
-        ui_Inventory.gameObject.SetActive(!ui_Inventory.gameObject.activeSelf);
-        if(ui_Inventory.gameObject.activeSelf)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            GameManager.Instance.Player.controller.isLookable = false;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            GameManager.Instance.Player.controller.isLookable = true;
-        }
-    }
+    
 }

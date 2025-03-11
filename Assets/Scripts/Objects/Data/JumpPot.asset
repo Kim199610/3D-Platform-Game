@@ -17,11 +17,12 @@ MonoBehaviour:
   description: "\uB2E4\uAC00\uAC00\uBA74 \uD06C\uAC8C \uB6F0\uC5B4\uC624\uB974\uAC8C
     \uB418\uB294 \uC810\uD504\uB300\uC785\uB2C8\uB2E4."
   crossHiar: {fileID: 7482667652216324306, guid: 3d6c557eb34d1a94988956274cf2c25d, type: 3}
-  crossHiarColor: {r: 1, g: 0, b: 0.96763754, a: 0}
+  crossHiarColor: {r: 1, g: 0, b: 0.96763754, a: 1}
   canStack: 0
   maxStackAmount: 0
   icon: {fileID: 0}
   dropPrefab: {fileID: 0}
   consumType: 0
   value: 0
-  equipPrefab: {fileID: 0}
+  buffPrefab: {fileID: 0}
+  duration: 0

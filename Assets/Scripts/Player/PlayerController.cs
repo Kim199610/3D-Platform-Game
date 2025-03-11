@@ -59,7 +59,9 @@ public class PlayerController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         isLookable = true;
+        
         _curMoveState = new List<MoveState> {MoveState.Idle,MoveState.Run};
+        UIManager.Instance.ui_game.inventoryDelegate += InventoryLookLock;
     }
     private void FixedUpdate()
     {
@@ -337,5 +339,9 @@ public class PlayerController : MonoBehaviour
         Vector3 projectMoveHoriz = Vector3.ProjectOnPlane(moveHoriz, slideNormalVector).normalized;
         moveDirection = projectMoveHoriz.normalized * Mathf.Lerp(projectMoveHoriz.magnitude, moveHoriz.magnitude, 0.5f);
         return moveDirection;
+    }
+    void InventoryLookLock(bool isInventoryOn)
+    {
+        isLookable = isInventoryOn;
     }
 }

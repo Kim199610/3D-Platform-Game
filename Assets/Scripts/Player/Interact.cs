@@ -64,8 +64,10 @@ public class Interact : MonoBehaviour
             return;
         if(Vector3.Distance(_camera.WorldToScreenPoint(itemPos), _cameraCenter) > interactRange)
             return;
-        if (interactableItem == null || Vector3.Distance(_camera.WorldToScreenPoint(interactableItem.transform.position), _cameraCenter)> Vector3.Distance(_camera.WorldToScreenPoint(itemPos), _cameraCenter))
+        if (interactableItem == null || Vector3.Distance(_camera.WorldToScreenPoint(interactableItem.transform.position), _cameraCenter) > Vector3.Distance(_camera.WorldToScreenPoint(itemPos), _cameraCenter))
+        {
             interactableItem = item;
+        }
     }
 
     bool IsShowInfo(BaseItem item)

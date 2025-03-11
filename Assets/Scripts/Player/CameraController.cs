@@ -16,6 +16,8 @@ public class CameraController : MonoBehaviour
 
     [SerializeField] LayerMask layerMask;
 
+    bool isZoomable;
+
     Ray ray;
     RaycastHit hit;
 
@@ -23,15 +25,23 @@ public class CameraController : MonoBehaviour
     Vector3 _firstCameraPos = new Vector3(0, 1.55f, 0.2f);
     private void Awake()
     {
+        isZoomable = true;
         _camera = Camera.main;
         _targetDistance = _camera.transform.localPosition.z;
+        UIManager.Instance.ui_game.inventoryDelegate += onInventoryCameraLock;
     }
     private void Update()
     {
         CameraMove();
     }
+    void onInventoryCameraLock(bool value)
+    {
+        isZoomable = value;
+    }
     public void OnScroll(InputAction.CallbackContext context)
     {
+        if(!isZoomable)
+            return;
         float scrollDelta = context.ReadValue<Vector2>().y;
 
         if (_camera.transform.localPosition.z >= -minZoomOut && _targetDistance >= -minZoomOut && scrollDelta >= 0)

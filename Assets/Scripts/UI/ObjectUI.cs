@@ -14,8 +14,8 @@ public class ObjectUI : MonoBehaviour
     public RectTransform nameBoxRectTransform;
     public TextMeshProUGUI descriptionText;
     public RectTransform descriptionBoxRectTransform;
-    bool sizeFit = false;
 
+    [SerializeField] Image interactableCrosshair;
     public Image crossHair;
     private void Update()
     {
@@ -32,12 +32,10 @@ public class ObjectUI : MonoBehaviour
         data = targetObj.GetComponent<BaseItem>().baseItemData;
         nameText.text = $"[{data.objectName}]";
         descriptionText.text = data.description;
+        crossHair.sprite = data.crossHiar;
+        crossHair.color = data.crossHiarColor;
 
         descriptionBoxRectTransform.gameObject.SetActive(false);
-    }
-    private void OnEnable()
-    {
-        
     }
     void UpdateNameBackgroundSize()
     {
@@ -51,5 +49,9 @@ public class ObjectUI : MonoBehaviour
     public void DescriptionActive(bool active)
     {
         descriptionBoxRectTransform.gameObject.SetActive(active);
+    }
+    public void IsInteractable(bool value)
+    {
+        interactableCrosshair.enabled = value;
     }
 }
