@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BaseItem : MonoBehaviour
-{
+{   //ì¸ì½”ë”©í…ŒìŠ¤íŠ¸
     public BaseItemData baseItemData;
     public bool indicateInfoBool;
     protected bool indicateInfoPreBool;
@@ -49,7 +49,7 @@ public class BaseItem : MonoBehaviour
     {
         if(baseItemData.type == ItemType.interactableObject)
         {
-            //»óÈ£ÀÛ¿ë ±â´É È£Ãâ
+            //ìƒí˜¸ì‘ìš© ê¸°ëŠ¥ í˜¸ì¶œ
         }
         else
         {
